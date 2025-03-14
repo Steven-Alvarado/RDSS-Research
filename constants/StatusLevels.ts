@@ -1,0 +1,1 @@
+// Emergency status level definitions
