@@ -1,10 +1,18 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { AlertCircle, Activity, PhoneCall, Users, MapPin, ClipboardList, AlertTriangle, Info, Bell, User } from "lucide-react";
+import { AlertCircle, Activity, PhoneCall, Users, MapPin, ClipboardList, AlertTriangle, Info, Bell, User } from "lucide-react-native";
+
+// Define valid route types
+type AppRoute = "/" | "/alerts" | "/map" | "/messages" | "/menu";
 
 export default function HomeScreen() {
   const router = useRouter();
+
+  // Function to handle bottom tab navigation with proper typing
+  const navigateToTab = (route: AppRoute) => {
+    router.push(route);
+  };
 
   return (
     <View className="flex-1 bg-gray-100">
@@ -16,11 +24,11 @@ export default function HomeScreen() {
         </View>
         <View className="flex-row space-x-4">
           <TouchableOpacity className="relative p-1 rounded-full text-gray-600">
-            <Bell size={20} />
+            <Bell size={20} color="#666" />
             <View className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full" />
           </TouchableOpacity>
           <TouchableOpacity className="p-1 bg-gray-200 rounded-full">
-            <User size={20} />
+            <User size={20} color="#666" />
           </TouchableOpacity>
         </View>
       </View>
@@ -53,17 +61,30 @@ export default function HomeScreen() {
         {/* Quick Actions */}
         <View className="mb-6">
           <Text className="text-sm font-medium text-gray-700 mb-3">Quick Actions</Text>
-          <TouchableOpacity className="w-full bg-red-600 text-white py-3 rounded-xl font-medium flex-row items-center justify-center mb-4 shadow-sm">
-            <AlertCircle size={18} className="mr-2 text-white" />
-            <Text className="text-white">Declare Emergency</Text>
+          <TouchableOpacity 
+            className="w-full bg-red-600 text-white py-3 rounded-xl font-medium flex-row items-center justify-center mb-4 shadow-sm"
+            onPress={() => router.push("/alerts")}
+          >
+            <AlertCircle size={18} color="#fff" />
+            <Text className="text-white ml-2">Declare Emergency</Text>
           </TouchableOpacity>
           <View className="grid grid-cols-3 gap-3">
-            <ActionButton icon={<Activity size={20} />} label="Protocols" />
-            <ActionButton icon={<PhoneCall size={20} />} label="Contacts" />
-            <ActionButton icon={<Users size={20} />} label="Teams" />
-            <ActionButton icon={<MapPin size={20} />} label="Map" />
-            <ActionButton icon={<ClipboardList size={20} />} label="Checklists" />
-            <ActionButton icon={<Activity size={20} />} label="Resources" />
+            <ActionButton icon={<Activity size={20} color="#3b82f6" />} label="Protocols" />
+            <ActionButton 
+              icon={<PhoneCall size={20} color="#3b82f6" />} 
+              label="Contacts" 
+            />
+            <ActionButton 
+              icon={<Users size={20} color="#3b82f6" />} 
+              label="Teams" 
+            />
+            <ActionButton 
+              icon={<MapPin size={20} color="#3b82f6" />} 
+              label="Map" 
+              onPress={() => router.push("/map")}
+            />
+            <ActionButton icon={<ClipboardList size={20} color="#3b82f6" />} label="Checklists" />
+            <ActionButton icon={<Activity size={20} color="#3b82f6" />} label="Resources" />
           </View>
         </View>
 
@@ -71,7 +92,7 @@ export default function HomeScreen() {
         <View className="mb-16">
           <View className="flex-row justify-between mb-3">
             <Text className="text-sm font-medium text-gray-700">Recent Alerts</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/alerts")}>
               <Text className="text-xs text-blue-600 font-medium">View All</Text>
             </TouchableOpacity>
           </View>
@@ -87,11 +108,11 @@ export default function HomeScreen() {
       {/* Bottom Navigation */}
       <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
         <View className="flex-row justify-around py-2">
-          <NavButton icon="home" label="Home" active />
-          <NavButton icon="alert-circle" label="Alerts" />
-          <NavButton icon="map" label="Map" />
-          <NavButton icon="chatbubbles" label="Messages" />
-          <NavButton icon="menu" label="Menu" />
+          <NavButton icon="home" label="Home" active={true} onPress={() => navigateToTab("/")} />
+          <NavButton icon="alert-circle" label="Alerts" active={false} onPress={() => navigateToTab("/alerts")} />
+          <NavButton icon="map" label="Map" active={false} onPress={() => navigateToTab("/map")} />
+          <NavButton icon="chatbubbles" label="Messages" active={false} onPress={() => navigateToTab("/messages")} />
+          <NavButton icon="menu" label="Menu" active={false} onPress={() => navigateToTab("/menu")} />
         </View>
       </View>
     </View>
@@ -99,7 +120,13 @@ export default function HomeScreen() {
 }
 
 /* Status Card Component */
-const StatusCard = ({ label, value, textColor = "text-gray-900" }) => (
+interface StatusCardProps {
+  label: string;
+  value: string;
+  textColor?: string;
+}
+
+const StatusCard = ({ label, value, textColor = "text-gray-900" }: StatusCardProps) => (
   <View className="bg-gray-50 p-3 rounded-lg">
     <Text className="text-xs text-gray-500">{label}</Text>
     <Text className={`font-bold text-lg ${textColor}`}>{value}</Text>
@@ -107,23 +134,39 @@ const StatusCard = ({ label, value, textColor = "text-gray-900" }) => (
 );
 
 /* Action Button Component */
-const ActionButton = ({ icon, label }) => (
-  <TouchableOpacity className="flex flex-col items-center justify-center bg-white p-3 rounded-xl shadow-sm">
+interface ActionButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  onPress?: () => void;
+}
+
+const ActionButton = ({ icon, label, onPress }: ActionButtonProps) => (
+  <TouchableOpacity 
+    className="flex flex-col items-center justify-center bg-white p-3 rounded-xl shadow-sm"
+    onPress={onPress}
+  >
     <View className="text-blue-600 mb-1">{icon}</View>
     <Text className="text-xs text-gray-700">{label}</Text>
   </TouchableOpacity>
 );
 
 /* Alert Item Component */
-const AlertItem = ({ type, title, location, time }) => {
+interface AlertItemProps {
+  type: 'warning' | 'info';
+  title: string;
+  location: string;
+  time: string;
+}
+
+const AlertItem = ({ type, title, location, time }: AlertItemProps) => {
   const Icon = type === "warning" ? AlertTriangle : Info;
   const bgColor = type === "warning" ? "bg-amber-100" : "bg-blue-100";
-  const iconColor = type === "warning" ? "text-amber-500" : "text-blue-500";
+  const iconColor = type === "warning" ? "#f59e0b" : "#3b82f6";
 
   return (
     <View className="bg-white rounded-lg shadow-sm p-3 flex-row items-center">
       <View className={`p-2 rounded-full mr-3 ${bgColor}`}>
-        <Icon size={18} className={iconColor} />
+        <Icon size={18} color={iconColor} />
       </View>
       <View className="flex-1">
         <Text className="text-sm font-medium text-gray-900">{title}</Text>
@@ -135,8 +178,15 @@ const AlertItem = ({ type, title, location, time }) => {
 };
 
 /* Bottom Navigation Button */
-const NavButton = ({ icon, label, active }) => (
-  <TouchableOpacity className="flex items-center">
+interface NavButtonProps {
+  icon: any; // Using any for Ionicons names since the exact type is complex
+  label: string;
+  active: boolean;
+  onPress?: () => void;
+}
+
+const NavButton = ({ icon, label, active, onPress }: NavButtonProps) => (
+  <TouchableOpacity className="flex items-center" onPress={onPress}>
     <Ionicons name={icon} size={22} color={active ? "#007AFF" : "#666"} />
     <Text className={`text-xs mt-1 ${active ? "text-blue-600 font-medium" : "text-gray-500"}`}>{label}</Text>
   </TouchableOpacity>
