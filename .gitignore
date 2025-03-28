@@ -38,4 +38,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# eslint
+.eslintrc.js
+
 app-example

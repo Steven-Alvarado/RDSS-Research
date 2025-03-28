@@ -1,7 +1,10 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { Settings, FileText, HelpCircle, LogOut, User, Shield } from "lucide-react-native";
+import { Settings, FileText, HelpCircle, LogOut, User, Shield, ChevronLeft } from "lucide-react-native";
+import { useRouter } from "expo-router";
 
 export default function MenuScreen() {
+  const router = useRouter();
+  
   const menuItems = [
     { icon: <User size={20} color="#666" />, title: "Profile", description: "View and edit your profile" },
     { icon: <Settings size={20} color="#666" />, title: "Settings", description: "App preferences and notifications" },
@@ -14,7 +17,12 @@ export default function MenuScreen() {
     <View className="flex-1 bg-gray-100">
       {/* Header */}
       <View className="bg-white shadow-sm px-4 py-4">
-        <Text className="text-xl font-bold text-gray-900">Menu</Text>
+        <View className="flex-row items-center">
+          <TouchableOpacity onPress={() => router.back()} className="mr-3">
+            <ChevronLeft size={24} color="#666" />
+          </TouchableOpacity>
+          <Text className="text-xl font-bold text-gray-900">Menu</Text>
+        </View>
       </View>
 
       {/* Content */}
@@ -34,7 +42,10 @@ export default function MenuScreen() {
           ))}
         </View>
 
-        <TouchableOpacity className="flex-row items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <TouchableOpacity 
+          className="flex-row items-center p-4 bg-gray-50 rounded-lg border border-gray-200"
+          onPress={() => router.push("/")}
+        >
           <LogOut size={20} color="#f43f5e" />
           <Text className="ml-4 text-red-500 font-medium">Log Out</Text>
         </TouchableOpacity>
