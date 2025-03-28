@@ -1,9 +1,10 @@
+import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function TabsLayout() {
   return (
-    <Tabs>
+    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue', headerShown: false}}>
       <Tabs.Screen
         name="index"
         options={{
@@ -32,6 +33,6 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <Ionicons name="analytics" size={24} color={color} />
         }}
       />
-    </Tabs>
-  );
-} 
+    </Tabs> 
+  )
+}

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text } from "react-native";
 import { MapPin } from "lucide-react-native";
 
 export default function MapScreen() {
